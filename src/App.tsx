@@ -262,14 +262,16 @@ export default function App() {
           <span className="font-outfit text-2xl md:text-3xl font-black italic uppercase tracking-tighter">Cric<span className="text-gold">bet</span>99</span>
         </div>
 
-        <nav className="hidden md:flex items-center gap-8 pointer-events-auto">
-          <button onClick={() => setView('landing')} className="text-[10px] font-black uppercase tracking-widest text-white/40 hover:text-gold transition-colors">Home</button>
-          <button onClick={() => setView('blog')} className="text-[10px] font-black uppercase tracking-widest text-white/40 hover:text-gold transition-colors">Insights</button>
+        <nav className="flex items-center gap-4 md:gap-8 pointer-events-auto ml-4">
+          <button onClick={() => setView('landing')} className="text-[8px] md:text-[10px] font-black uppercase tracking-widest text-white/40 hover:text-gold transition-colors">Home</button>
+          <button onClick={() => setView('blog')} className="text-[8px] md:text-[10px] font-black uppercase tracking-widest text-white/40 hover:text-gold transition-colors">Insights</button>
         </nav>
         
+        <div className="flex-1" />
+
         <button 
           onClick={() => isAdmin ? setView('editor') : setShowLogin(true)}
-          className="pointer-events-auto glass border-gold/30 text-gold px-6 py-2.5 md:px-8 md:py-3 rounded-full font-black text-xs md:text-sm uppercase tracking-widest hover:bg-gold hover:text-obsidian transition-all shadow-xl"
+          className="pointer-events-auto glass border-gold/30 text-gold px-4 py-2 md:px-8 md:py-3 rounded-full font-black text-[10px] md:text-sm uppercase tracking-widest hover:bg-gold hover:text-obsidian transition-all shadow-xl whitespace-nowrap"
         >
           {isAdmin ? 'Dashboard' : 'Login'}
         </button>
