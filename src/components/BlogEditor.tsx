@@ -51,6 +51,13 @@ export default function BlogEditor() {
   
   const contentRef = useRef<HTMLDivElement>(null);
 
+  // Synchronize editor content when editing
+  useEffect(() => {
+    if (activeTab === 'create' && editingId && contentRef.current) {
+      contentRef.current.innerHTML = content;
+    }
+  }, [activeTab, editingId]);
+
   // Load posts for management
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem('publishedPosts') || '[]');
@@ -203,7 +210,7 @@ export default function BlogEditor() {
                     const savedPosts = JSON.parse(localStorage.getItem('publishedPosts') || '[]');
                     let newPosts;
                     if (editingId) {
-                      newPosts = savedPosts.map((p: any) => p.id === editingId ? postData : p);
+                      newPosts = savedPosts.map((p: any) => p.id == editingId ? postData : p);
                     } else {
                       newPosts = [postData, ...savedPosts];
                     }
