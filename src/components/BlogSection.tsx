@@ -1,5 +1,6 @@
-import { motion } from 'motion/react';
-import { Calendar, ArrowRight, ChevronLeft } from 'lucide-react';
+import React, { useState, useEffect } from 'react';
+import { motion, AnimatePresence } from 'motion/react';
+import { Calendar, ArrowRight, ChevronLeft, Share2, Clock } from 'lucide-react';
 
 const POSTS = [
   {
@@ -13,6 +14,113 @@ const POSTS = [
 ];
 
 export default function BlogSection({ onBack }: { onBack?: () => void }) {
+  const [posts, setPosts] = useState(POSTS);
+  const [selectedPost, setSelectedPost] = useState<any>(null);
+
+  useEffect(() => {
+    const savedPosts = JSON.parse(localStorage.getItem('publishedPosts') || '[]');
+    // Filter out duplicates (by title or slug)
+    const combined = [...POSTS];
+    savedPosts.forEach((sp: any) => {
+      if (!combined.some(p => p.title === sp.title)) {
+        combined.push(sp);
+      }
+    });
+    setPosts(combined);
+  }, []);
+
+  if (selectedPost) {
+    return (
+      <section className="min-h-screen py-32 px-6 bg-obsidian relative overflow-hidden">
+        <div className="absolute top-0 right-0 w-[500px] h-[500px] bg-gold/5 blur-[150px] rounded-full -translate-y-1/2 translate-x-1/2" />
+        
+        <div className="max-w-4xl mx-auto relative z-10">
+          <motion.button
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            onClick={() => {
+              setSelectedPost(null);
+              window.scrollTo(0, 0);
+            }}
+            className="flex items-center gap-2 text-gold font-bold text-xs uppercase tracking-widest mb-12 hover:scale-105 transition-transform"
+          >
+            <ChevronLeft className="w-4 h-4" />
+            Back to Insights
+          </motion.button>
+
+          <div className="space-y-8">
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="space-y-6"
+            >
+              <div className="flex flex-wrap items-center gap-4">
+                <span className="bg-gold text-obsidian px-4 py-1.5 rounded-full text-[10px] font-black uppercase tracking-widest">
+                  {selectedPost.category}
+                </span>
+                <div className="flex items-center gap-4 text-white/40 text-[10px] uppercase font-bold tracking-widest">
+                  <div className="flex items-center gap-1.5">
+                    <Calendar className="w-3.5 h-3.5 text-gold" />
+                    {selectedPost.date}
+                  </div>
+                  <div className="flex items-center gap-1.5">
+                    <Clock className="w-3.5 h-3.5 text-gold" />
+                    5 Min Read
+                  </div>
+                </div>
+              </div>
+
+              <h1 className="font-outfit text-4xl md:text-6xl font-black italic uppercase tracking-tighter leading-none">
+                {selectedPost.title}
+              </h1>
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0, scale: 0.95 }}
+              animate={{ opacity: 1, scale: 1 }}
+              className="relative aspect-video rounded-[2.5rem] overflow-hidden border border-white/5 shadow-2xl"
+            >
+              <img 
+                src={selectedPost.image} 
+                alt={selectedPost.title}
+                className="w-full h-full object-cover"
+              />
+            </motion.div>
+
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ delay: 0.2 }}
+              className="prose prose-invert prose-gold max-w-none"
+            >
+              <div 
+                className="text-white/70 text-lg leading-relaxed space-y-6"
+                dangerouslySetInnerHTML={{ __html: selectedPost.content || selectedPost.excerpt }}
+              />
+            </motion.div>
+
+            <div className="pt-12 border-t border-white/5 flex justify-between items-center">
+               <div className="flex items-center gap-4">
+                 <button className="p-3 rounded-2xl glass border-white/5 hover:border-gold/30 text-white/40 hover:text-gold transition-all">
+                   <Share2 className="w-5 h-5" />
+                 </button>
+               </div>
+               <button 
+                 onClick={() => {
+                   setSelectedPost(null);
+                   window.scrollTo(0, 0);
+                 }}
+                 className="bg-gold text-obsidian px-8 py-3 rounded-2xl font-black text-xs uppercase tracking-widest hover:scale-105 transition-transform"
+               >
+                 Close Article
+               </button>
+            </div>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
   return (
     <section id="blog" className="min-h-screen py-32 px-6 bg-obsidian relative overflow-hidden">
       <div className="absolute top-0 right-0 w-96 h-96 bg-gold/5 blur-[120px] rounded-full" />
@@ -48,7 +156,7 @@ export default function BlogSection({ onBack }: { onBack?: () => void }) {
         </div>
 
         <div className="grid md:grid-cols-2 lg:grid-cols-3 gap-8">
-          {POSTS.map((post, i) => (
+          {posts.map((post, i) => (
             <motion.div
               key={post.id}
               initial={{ opacity: 0, y: 30 }}
@@ -86,7 +194,13 @@ export default function BlogSection({ onBack }: { onBack?: () => void }) {
                 </p>
 
                 <div className="mt-auto">
-                  <button className="flex items-center gap-2 text-gold font-bold text-xs uppercase tracking-widest group/btn">
+                  <button 
+                    onClick={() => {
+                      setSelectedPost(post);
+                      window.scrollTo(0, 0);
+                    }}
+                    className="flex items-center gap-2 text-gold font-bold text-xs uppercase tracking-widest group/btn"
+                  >
                     Read Full Analysis 
                     <ArrowRight className="w-4 h-4 group-hover/btn:translate-x-1 transition-transform" />
                   </button>

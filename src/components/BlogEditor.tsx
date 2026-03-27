@@ -147,8 +147,32 @@ export default function BlogEditor() {
             <button 
               className="bg-gold text-obsidian px-8 py-3 rounded-2xl flex items-center gap-2 text-sm font-black uppercase tracking-widest shadow-[0_0_20px_rgba(246,196,69,0.3)] hover:scale-105 active:scale-95 transition-all"
               onClick={() => {
-                if (!title || !content) alert('Title and Content are required!');
-                else alert('Post Published Successfully! Your content is now live.');
+                if (!title || !content) {
+                  alert('Title and Content are required!');
+                  return;
+                }
+                
+                const newPost = {
+                  id: Date.now(),
+                  title,
+                  slug,
+                  content,
+                  excerpt: metaDescription || content.substring(0, 150).replace(/<[^>]*>/g, '') + '...',
+                  date: new Date().toLocaleDateString('en-US', { month: 'long', day: 'numeric', year: 'numeric' }),
+                  category,
+                  image: images.length > 0 ? images[0].url : 'https://images.unsplash.com/photo-1540747913346-19e32dc3e97e?q=80&w=2000&auto=format&fit=crop'
+                };
+
+                const savedPosts = JSON.parse(localStorage.getItem('publishedPosts') || '[]');
+                localStorage.setItem('publishedPosts', JSON.stringify([newPost, ...savedPosts]));
+                
+                alert('Post Published Successfully! Your content is now live.');
+                // Clear editor
+                setTitle('');
+                setContent('');
+                setMetaDescription('');
+                setImages([]);
+                if (contentRef.current) contentRef.current.innerHTML = '';
               }}
             >
               <Send className="w-4 h-4" />
