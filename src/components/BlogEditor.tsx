@@ -26,6 +26,7 @@ import {
   Sparkles
 } from 'lucide-react';
 import { motion, AnimatePresence } from 'motion/react';
+import { INITIAL_POSTS } from '../data/blogData';
 
 interface SEOStats {
   score: number;
@@ -53,7 +54,16 @@ export default function BlogEditor() {
   // Load posts for management
   useEffect(() => {
     const saved = JSON.parse(localStorage.getItem('publishedPosts') || '[]');
-    setPublishedPosts(saved);
+    const isInitialized = localStorage.getItem('blog_initialized');
+    
+    if (saved.length === 0 && !isInitialized) {
+      // First time initialization: Seed localStorage with default posts if empty
+      localStorage.setItem('publishedPosts', JSON.stringify(INITIAL_POSTS));
+      localStorage.setItem('blog_initialized', 'true');
+      setPublishedPosts(INITIAL_POSTS);
+    } else {
+      setPublishedPosts(saved);
+    }
   }, [activeTab]);
 
   // Auto-generate slug from title

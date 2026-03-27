@@ -2,31 +2,25 @@ import React, { useState, useEffect } from 'react';
 import { motion, AnimatePresence } from 'motion/react';
 import { Calendar, ArrowRight, ChevronLeft, Share2, Clock } from 'lucide-react';
 
-const POSTS = [
-  {
-    id: 1,
-    title: "IPL 2026 Opening Match: KKR vs RCB – Full Preview, Date, Time & Squad Analysis",
-    excerpt: "The biggest cricket festival in the world, the Indian Premier League (IPL) 2026, is all set to begin with an exciting opening clash...",
-    date: "March 27, 2026",
-    category: "IPL 2026",
-    image: "https://images.unsplash.com/photo-1531415074968-036ba1b575da?q=80&w=2067&auto=format&fit=crop"
-  }
-];
+import { INITIAL_POSTS } from '../data/blogData';
 
 export default function BlogSection({ onBack }: { onBack?: () => void }) {
-  const [posts, setPosts] = useState(POSTS);
+  const [posts, setPosts] = useState<any[]>([]);
   const [selectedPost, setSelectedPost] = useState<any>(null);
 
   useEffect(() => {
     const savedPosts = JSON.parse(localStorage.getItem('publishedPosts') || '[]');
-    // Filter out duplicates (by title or slug)
-    const combined = [...POSTS];
-    savedPosts.forEach((sp: any) => {
-      if (!combined.some(p => p.title === sp.title)) {
-        combined.push(sp);
-      }
-    });
-    setPosts(combined);
+    const isInitialized = localStorage.getItem('blog_initialized');
+    
+    if (savedPosts.length === 0 && !isInitialized) {
+      // First time initialization: Seed localStorage with default posts
+      localStorage.setItem('publishedPosts', JSON.stringify(INITIAL_POSTS));
+      localStorage.setItem('blog_initialized', 'true');
+      setPosts(INITIAL_POSTS);
+    } else {
+      // Use saved posts from localStorage
+      setPosts(savedPosts);
+    }
   }, []);
 
   if (selectedPost) {
