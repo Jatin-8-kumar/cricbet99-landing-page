@@ -1,5 +1,5 @@
 import { motion } from 'motion/react';
-import { Calendar, User, ArrowRight } from 'lucide-react';
+import { Calendar, ArrowRight, ChevronLeft } from 'lucide-react';
 
 const POSTS = [
   {
@@ -7,18 +7,28 @@ const POSTS = [
     title: "IPL 2026 Opening Match: KKR vs RCB – Full Preview, Date, Time & Squad Analysis",
     excerpt: "The biggest cricket festival in the world, the Indian Premier League (IPL) 2026, is all set to begin with an exciting opening clash...",
     date: "March 27, 2026",
-    author: "Sonu",
     category: "IPL 2026",
     image: "https://images.unsplash.com/photo-1531415074968-036ba1b575da?q=80&w=2067&auto=format&fit=crop"
   }
 ];
 
-export default function BlogSection() {
+export default function BlogSection({ onBack }: { onBack?: () => void }) {
   return (
-    <section id="blog" className="py-24 px-6 bg-obsidian relative overflow-hidden">
+    <section id="blog" className="min-h-screen py-32 px-6 bg-obsidian relative overflow-hidden">
       <div className="absolute top-0 right-0 w-96 h-96 bg-gold/5 blur-[120px] rounded-full" />
       
       <div className="max-w-7xl mx-auto relative z-10">
+        {onBack && (
+          <motion.button
+            initial={{ opacity: 0, x: -10 }}
+            animate={{ opacity: 1, x: 0 }}
+            onClick={onBack}
+            className="flex items-center gap-2 text-gold font-bold text-xs uppercase tracking-widest mb-12 hover:scale-105 transition-transform"
+          >
+            <ChevronLeft className="w-4 h-4" />
+            Back to Home
+          </motion.button>
+        )}
         <div className="flex flex-col md:flex-row md:items-end justify-between mb-16 gap-6">
           <div className="space-y-4">
             <motion.div
@@ -64,10 +74,6 @@ export default function BlogSection() {
                   <div className="flex items-center gap-1.5">
                     <Calendar className="w-3 h-3 text-gold" />
                     {post.date}
-                  </div>
-                  <div className="flex items-center gap-1.5">
-                    <User className="w-3 h-3 text-gold" />
-                    {post.author}
                   </div>
                 </div>
                 

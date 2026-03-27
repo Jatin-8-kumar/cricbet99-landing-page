@@ -129,7 +129,7 @@ function ScrollToTop() {
 }
 
 export default function App() {
-  const [view, setView] = useState<'landing' | 'editor'>('landing');
+  const [view, setView] = useState<'landing' | 'editor' | 'blog'>('landing');
   const [isAdmin, setIsAdmin] = useState(() => localStorage.getItem('isAdmin') === 'true');
   const [showLogin, setShowLogin] = useState(false);
   const [loginUser, setLoginUser] = useState('');
@@ -171,6 +171,14 @@ export default function App() {
           Back to Landing
         </button>
       </>
+    );
+  }
+
+  if (view === 'blog') {
+    return (
+      <div className="min-h-screen font-sans selection:bg-gold selection:text-obsidian overflow-x-hidden scroll-smooth">
+        <BlogSection onBack={() => setView('landing')} />
+      </div>
     );
   }
 
@@ -253,6 +261,11 @@ export default function App() {
           <Trophy className="w-8 h-8 md:w-10 md:h-10 text-gold" />
           <span className="font-outfit text-2xl md:text-3xl font-black italic uppercase tracking-tighter">Cric<span className="text-gold">bet</span>99</span>
         </div>
+
+        <nav className="hidden md:flex items-center gap-8 pointer-events-auto">
+          <button onClick={() => setView('landing')} className="text-[10px] font-black uppercase tracking-widest text-white/40 hover:text-gold transition-colors">Home</button>
+          <button onClick={() => setView('blog')} className="text-[10px] font-black uppercase tracking-widest text-white/40 hover:text-gold transition-colors">Insights</button>
+        </nav>
         
         <button 
           onClick={() => isAdmin ? setView('editor') : setShowLogin(true)}
@@ -542,7 +555,7 @@ export default function App() {
       </section>
 
 
-      <BlogSection />
+      {/* Blog section removed from home as requested */}
 
       <SEOContent />
 
@@ -566,8 +579,9 @@ export default function App() {
              <div className="space-y-4">
                 <h4 className="text-white font-bold uppercase text-xs tracking-widest">Explore</h4>
                 <ul className="text-white/40 text-[10px] uppercase space-y-2 font-bold tracking-widest">
-                  <li><a href="#" className="hover:text-gold">Home</a></li>
+                  <li><button onClick={() => setView('landing')} className="hover:text-gold">Home</button></li>
                   <li><a href="#" className="hover:text-gold">About Us</a></li>
+                  <li><button onClick={() => setView('blog')} className="hover:text-gold">Blog</button></li>
                   <li><button onClick={() => setShowLogin(true)} className="hover:text-gold outline-none underline decoration-gold/0 hover:decoration-gold/100 transition-all">Login</button></li>
                   <li><a href="#" className="hover:text-gold">Sign Up</a></li>
                 </ul>
@@ -587,7 +601,7 @@ export default function App() {
                   <li><a href="#" className="hover:text-gold">Customer Care</a></li>
                   <li><a href="#" className="hover:text-gold">FAQ</a></li>
                   <li><a href="#" className="hover:text-gold">Sitemap</a></li>
-                  <li><a href="#blog" className="hover:text-gold">Blog</a></li>
+                  <li><button onClick={() => setView('blog')} className="hover:text-gold">Blog</button></li>
                 </ul>
              </div>
              <div className="space-y-4">
